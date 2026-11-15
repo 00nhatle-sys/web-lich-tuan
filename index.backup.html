@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch công tác tuần — Bản xem ngoài</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Be Vietnam Pro", Arial, sans-serif;
+      background: #f2f4f7;
+      color: #10233d;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh
+    }
+
+    header {
+      background: #10233d;
+      color: #fff;
+      padding: 18px 16px 14px
+    }
+
+    header h1 {
+      font-size: 19px;
+      line-height: 1.3
+    }
+
+    header p {
+      font-size: 13px;
+      color: #b9c6d8;
+      margin-top: 4px
+    }
+
+    .fresh {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 16px;
+      font-size: 13px
+    }
+
+    .fresh b {
+      color: #0a7d4d
+    }
+
+    .fresh .stale {
+      color: #b45309
+    }
+
+    .sample {
+      background: #fff7e6;
+      border: 1px solid #f5c542;
+      color: #7a5b00;
+      font-size: 13px;
+      padding: 10px 16px
+    }
+
+    .weeknav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px
+    }
+
+    .weeknav button {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer
+    }
+
+    .weeknav strong {
+      font-size: 15px
+    }
+
+    .daytabs {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px 12px;
+      overflow-x: auto
+    }
+
+    .daytabs button {
+      flex: 0 0 auto;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    .daytabs button.on {
+      background: #10233d;
+      color: #fff;
+      border-color: #10233d
+    }
+
+    .daytabs button.today {
+      border-color: #ffc800
+    }
+
+    main {
+      padding: 0 16px 24px
+    }
+
+    .dayhead {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 14px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: #475569
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #ffc800;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px
+    }
+
+    .card .time {
+      font-weight: 700;
+      font-size: 15px
+    }
+
+    .card .title {
+      font-size: 15px;
+      margin-top: 2px
+    }
+
+    .card .meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.5
+    }
+
+    .card .tag {
+      display: inline-block;
+      font-size: 12px;
+      background: #eef2f7;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-top: 8px
+    }
+
+    .card .tag.flag {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      margin-left: 6px
+    }
+
+    .card .tag.flag.cancel {
+      background: #fde8e8;
+      border-color: #f5b5b5;
+      color: #b91c1c;
+      font-weight: 700
+    }
+
+    .empty {
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      color: #64748b;
+      font-size: 14px
+    }
+
+    .userbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e8edf3;
+      padding: 8px 16px;
+      font-size: 13px
+    }
+
+    .userbar button {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    .loginwrap {
+      position: fixed;
+      inset: 0;
+      background: #10233d;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 16px;
+      z-index: 50;
+      overflow-y: auto
+    }
+
+    .loginbox {
+      background: #fff;
+      border-radius: 14px;
+      padding: 22px 20px;
+      width: 100%;
+      max-width: 360px
+    }
+
+    .loginbox h2 {
+      font-size: 18px;
+      margin-bottom: 6px
+    }
+
+    .loginbox p {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
+      line-height: 1.5
+    }
+
+    .loginbox label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 12px 0 4px
+    }
+
+    .loginbox input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 15px
+    }
+
+    .loginbox button {
+      width: 100%;
+      margin-top: 16px;
+      background: #10233d;
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px;
+      font-size: 15px;
+      cursor: pointer
+    }
+
+    .loginbox button:disabled {
+      opacity: .6
+    }
+
+    .loginbox .err {
+      color: #b91c1c;
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 16px;
+      line-height: 1.4
+    }
+
+    footer {
+      padding: 16px;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6
+    }
+
+    footer b {
+      color: #334155
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Lịch công tác tuần</h1>
+    <p>Bản xem ngoài internet — chỉ hiện trường đã duyệt</p>
+  </header>
+
+  <div class="sample" id="sampleBanner" hidden>⚠️ <b>DỮ LIỆU MẪU</b> — chưa nối endpoint thật, các cuộc họp dưới đây chỉ
+    là ví dụ để duyệt giao diện.</div>
+
+  <div class="fresh">
+    <span id="freshText">Đang tải lịch…</span>
+    <span id="freshState"></span>
+  </div>
+
+  <div class="userbar" id="userBar" hidden>
+    <span id="userText"></span>
+    <button id="logoutBtn">Đăng xuất</button>
+  </div>
+
+  <div class="loginwrap" id="loginWrap" hidden>
+    <form class="loginbox" id="loginForm">
+      <h2>Đăng nhập xem lịch</h2>
+      <p>Trang này yêu cầu đăng nhập. Mật khẩu được kiểm tra ở phía máy chủ — trang không chứa dữ liệu lịch cho tới khi
+        đăng nhập thành công.</p>
+      <label for="loginUser">Tên đăng nhập</label>
+      <input id="loginUser" autocomplete="username" required>
+      <label for="loginPass">Mật khẩu</label>
+      <input id="loginPass" type="password" autocomplete="current-password" required>
+      <button type="submit" id="loginBtn">Đăng nhập</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+  </div>
+
+  <div class="weeknav">
+    <button id="prevBtn">‹ Tuần trước</button>
+    <strong id="weekLabel">—</strong>
+    <button id="nextBtn">Tuần sau ›</button>
+  </div>
+
+  <div class="daytabs" id="dayTabs"></div>
+  <main id="list"></main>
+
+  <footer>
+    <b>Nguyên tắc an toàn của bản này:</b> web ngoài không bao giờ truy vấn ngược vào trang nội bộ — extension trong
+    Chrome chỉ đẩy dữ liệu đã lọc ra ngoài. Chỉ hiện thứ/ngày, giờ, tên cuộc họp/công tác, địa điểm và đơn vị chủ trì.
+    Ghi chú nội bộ, số điện thoại, link tài liệu/link họp nội bộ không bao giờ xuất hiện ở đây.
+    <br><br>Nếu extension mất kết nối, trang vẫn hiện bản cuối cùng kèm cảnh báo “dữ liệu cũ”.
+  </footer>
+
+  <script>
+    // ============================================================================
+    //  CẤU HÌNH — điền 1 dòng URL này sau khi deploy Apps Script (xem HUONG-DAN.md).
+    //  BẢN ĐĂNG NHẬP: file này KHÔNG còn chứa token nào. Người xem đăng nhập
+    //  bằng user/pass — Apps Script kiểm tra ở phía server rồi cấp mã phiên
+    //  tạm thời, trang chỉ giữ mã phiên đó trong trình duyệt của người xem.
+    //  Khi chưa điền URL, trang tự hiện dữ liệu mẫu như prototype để duyệt giao diện.
+    // ============================================================================
+    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbzUFYbSjH8oORJVopAwLezsiQ5sWFtVVqRojKqL99rlRHkyPxcOyGilgbwlvHdISs8F/exec"; // ví dụ: https://script.google.com/macros/s/AKfy…/exec
+    const STALE_AFTER_HOURS = 12; // quá 12h chưa đồng bộ -> cảnh báo "dữ liệu cũ"
+
+    // Dữ liệu MẪU — chỉ dùng khi chưa cấu hình endpoint, y hệt prototype đã duyệt.
+    const SAMPLE = [
+      { d: 0, start: "08:00", end: "09:00", title: "Họp giao ban tuần", place: "Phòng họp A", unit: "Văn phòng", tag: "Họp" },
+      { d: 0, start: "14:00", end: "16:30", title: "Công tác — kiểm tra hiện trường (mẫu)", place: "Hiện trường — Tỉnh mẫu", unit: "Phòng Kỹ thuật", tag: "Công tác" },
+      { d: 1, start: "09:00", end: "10:30", title: "Họp rà soát tiến độ dự án (mẫu)", place: "Phòng họp B", unit: "Ban Dự án", tag: "Họp" },
+      { d: 2, start: "08:30", end: "11:00", title: "Làm việc với đối tác (mẫu)", place: "Trụ sở đối tác", unit: "Ban Lãnh đạo", tag: "Làm việc" },
+      { d: 3, start: "07:30", end: "12:00", title: "Công tác — khảo sát (mẫu)", place: "Địa điểm mẫu", unit: "Phòng Kỹ thuật", tag: "Công tác" },
+      { d: 3, start: "14:00", end: "15:00", title: "Họp nội bộ tuần (mẫu)", place: "Phòng họp A", unit: "Văn phòng", tag: "Họp" },
+      { d: 4, start: "09:00", end: "10:00", title: "Tổng kết tuần (mẫu)", place: "Phòng họp A", unit: "Văn phòng", tag: "Họp" },
+    ];
+    const TAG_LABEL = { hop: "Họp", congtac: "Công tác", lamviec: "Làm việc", khac: "Lịch" };
+    const DAYS = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
+    const configured = ENDPOINT_URL.indexOf("__APPS_SCRIPT_URL__") === -1;
+
+    let weekStart = mondayOf(new Date());
+    let selected = (new Date().getDay() + 6) % 7; // hôm nay
+    let events = [];      // sự kiện tuần đang xem, dạng {date,start,end,title,place,unit,kind}
+    let syncedAt = "";
+    let usingSample = !configured;
+    let usingCache = false;
+
+    const fmt = d => String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0");
+    function mondayOf(d) {
+      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+      return x;
+    }
+    function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+    function fmtSynced(isoStr) {
+      if (!isoStr) return "—";
+      const d = new Date(isoStr);
+      return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0") + " " + fmt(d) + "/" + d.getFullYear();
+    }
+    function cacheKey(ws) { return "lich-tuan-" + iso(ws); }
+
+    // Chuẩn hoá ngày/giờ nhận từ endpoint (bản sửa 14/11/2026).
+    // Nếu Sheet từng lưu ngày/giờ dưới dạng Date (Google Sheets tự ép kiểu),
+    // Apps Script trả về chuỗi ISO đầy đủ kiểu "2026-11-08T17:00:00.000Z" thay
+    // vì "2026-11-09" — so khớp trực tiếp với ngày đang chọn sẽ không bao giờ
+    // trúng và trang báo "không có lịch" dù API có dữ liệu. Hàm dưới đưa mọi
+    // dạng về lại "yyyy-MM-dd" / "HH:mm" theo giờ địa phương của trình duyệt.
+    function normDate(v) {
+      if (!v) return "";
+      const s = String(v).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const dm = /^(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s);
+      if (dm) return dm[3] + "-" + dm[2].padStart(2, "0") + "-" + dm[1].padStart(2, "0");
+      const d = new Date(s);
+      if (!isNaN(d)) return iso(d);
+      return s.slice(0, 10);
+    }
+    function normTime(v) {
+      if (!v) return "";
+      const s = String(v).trim();
+      const m = /^(\d{1,2}):(\d{2})/.exec(s);
+      if (m) return m[1].padStart(2, "0") + ":" + m[2];
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        // Ô giờ trong Sheet bị ép kiểu thành Date năm 1899 — trình duyệt đổi
+        // năm 1899 theo giờ địa phương CỔ (VN khi đó là UTC+6:42) nên lệch 18
+        // phút. Phải tự cộng độ lệch múi giờ HIỆN TẠI (lấy từ ngày hôm nay,
+        // không lấy từ chính Date 1899 vì nó cũng trả offset cổ) vào giờ UTC.
+        let mins = d.getUTCHours() * 60 + d.getUTCMinutes() + (-new Date().getTimezoneOffset());
+        mins = ((mins % 1440) + 1440) % 1440;
+        return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
+      }
+      return s;
+    }
+    function normEvent(e) {
+      return {
+        date: normDate(e.date), start: normTime(e.start), end: normTime(e.end),
+        title: e.title || "", place: e.place || "", unit: e.unit || "", kind: e.kind || "",
+        flag: e.flag || "", prep: e.prep || "", members: e.members || ""
+      };
+    }
+
+    // --- PHIÊN ĐĂNG NHẬP ---------------------------------------------------------
+    // Mã phiên do Apps Script cấp sau khi đăng nhập đúng; lưu trong trình duyệt
+    // của chính người xem (localStorage). Hết hạn phía server (trượt 6 giờ, tối
+    // đa 7 ngày) thì API trả code 401 và trang quay về màn hình đăng nhập.
+    const SESSION_KEY = "lich-session";
+    function getSession() {
+      try {
+        const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+        return s && s.sid ? s : null;
+      } catch (e) { return null; }
+    }
+    function setSession(s) {
+      if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+      else localStorage.removeItem(SESSION_KEY);
+    }
+
+    async function apiPost(body) {
+      let res;
+      try {
+        res = await fetch(ENDPOINT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        });
+      } catch (e) {
+        throw new Error("Không nối được máy chủ. Kiểm tra mạng rồi thử lại.");
+      }
+      return res.json();
+    }
+
+    function showLogin(msg) {
+      document.getElementById("loginWrap").hidden = false;
+      document.getElementById("userBar").hidden = true;
+      if (msg) document.getElementById("loginErr").textContent = msg;
+    }
+    function showApp(user) {
+      document.getElementById("loginWrap").hidden = true;
+      document.getElementById("userBar").hidden = false;
+      document.getElementById("userText").textContent = "👤 " + user;
+    }
+
+    async function loadWeek() {
+      if (!configured) { // chưa nối endpoint: hiện mẫu như prototype
+        events = [];
+        syncedAt = "";
+        render();
+        return;
+      }
+      const sess = getSession();
+      if (!sess) { // chưa đăng nhập: chỉ hiện form, không gọi lấy dữ liệu
+        events = [];
+        syncedAt = "";
+        showLogin();
+        render();
+        return;
+      }
+      const ws = iso(weekStart);
+      try {
+        const data = await apiPost({ action: "schedule", session: sess.sid, week_start: ws });
+        if (!data.ok) {
+          if (data.code === 401) { // phiên hết hạn phía server
+            setSession(null);
+            events = [];
+            syncedAt = "";
+            showLogin("Phiên đăng nhập đã hết hạn. Đăng nhập lại để xem lịch.");
+            render();
+            return;
+          }
+          throw new Error(data.error || "endpoint lỗi");
+        }
+        events = (data.events || []).map(normEvent);
+        syncedAt = data.synced_at || "";
+        usingCache = false;
+        localStorage.setItem(cacheKey(weekStart), JSON.stringify({ events, synced_at: syncedAt }));
+      } catch (err) {
+        // Mất mạng / endpoint lỗi: dùng bản cache gần nhất, kèm cảnh báo cũ.
+        const cached = localStorage.getItem(cacheKey(weekStart));
+        if (cached) {
+          const c = JSON.parse(cached);
+          events = (c.events || []).map(normEvent);
+          syncedAt = c.synced_at || "";
+          usingCache = true;
+        } else {
+          events = [];
+          syncedAt = "";
+        }
+      }
+      render();
+    }
+
+    function renderFresh() {
+      const text = document.getElementById("freshText");
+      const state = document.getElementById("freshState");
+      document.getElementById("sampleBanner").hidden = !usingSample;
+      if (usingSample) {
+        text.textContent = "Chưa nối dữ liệu thật — đang xem bản mẫu";
+        state.innerHTML = "";
+        return;
+      }
+      const ageH = syncedAt ? (Date.now() - new Date(syncedAt).getTime()) / 36e5 : Infinity;
+      const stale = usingCache || !syncedAt || ageH > STALE_AFTER_HOURS;
+      text.textContent = "Cập nhật lúc " + fmtSynced(syncedAt) +
+        (events.length ? " • " + events.length + " sự kiện tuần này" : "");
+      state.innerHTML = "";
+      const b = document.createElement("b");
+      if (stale) { b.className = "stale"; b.textContent = "● Dữ liệu cũ"; }
+      else { b.textContent = "● Dữ liệu tươi"; }
+      state.appendChild(b);
+      if (usingCache) text.textContent += " (bản lưu trên máy)";
+    }
+
+    function render() {
+      renderFresh();
+      const end = new Date(weekStart); end.setDate(end.getDate() + 6);
+      document.getElementById("weekLabel").textContent = fmt(weekStart) + " – " + fmt(end) + "/" + end.getFullYear();
+      const tabs = document.getElementById("dayTabs"); tabs.innerHTML = "";
+      const todayIso = iso(new Date());
+      DAYS.forEach((name, i) => {
+        const d = new Date(weekStart); d.setDate(d.getDate() + i);
+        const b = document.createElement("button");
+        b.textContent = name + " " + fmt(d) + (iso(d) === todayIso ? " • hôm nay" : "");
+        if (i === selected) b.className = "on";
+        if (iso(d) === todayIso) b.classList.add("today");
+        b.onclick = () => { selected = i; render(); };
+        tabs.appendChild(b);
+      });
+      const list = document.getElementById("list"); list.innerHTML = "";
+      const d = new Date(weekStart); d.setDate(d.getDate() + selected);
+      const h = document.createElement("div"); h.className = "dayhead";
+      h.textContent = DAYS[selected] + " — " + fmt(d) + "/" + d.getFullYear();
+      list.appendChild(h);
+      // Dữ liệu hiển thị bằng textContent (không innerHTML) để tránh XSS từ trang gốc.
+      const dayIso = iso(d);
+      const items = usingSample
+        ? SAMPLE.filter(e => e.d === selected)
+        : events.filter(e => e.date === dayIso);
+      if (!items.length) {
+        const e = document.createElement("div"); e.className = "empty"; e.textContent = "Không có lịch công tác ngày này.";
+        list.appendChild(e);
+      } else items.forEach(e => {
+        const c = document.createElement("div"); c.className = "card";
+        const time = document.createElement("div"); time.className = "time";
+        time.textContent = e.start + (e.end ? " – " + e.end : "");
+        const title = document.createElement("div"); title.className = "title";
+        title.textContent = e.title;
+        const meta = document.createElement("div"); meta.className = "meta";
+        const lines = ["📍 " + (e.place || "—") + "  •  👥 Chủ trì: " + (e.unit || "—")];
+        if (e.prep) lines.push("🧰 Chuẩn bị: " + e.prep);
+        if (e.members) lines.push("👥 Thành phần: " + e.members);
+        lines.forEach(t => {
+          const ln = document.createElement("div"); ln.textContent = t; meta.appendChild(ln);
+        });
+        const tag = document.createElement("span"); tag.className = "tag";
+        tag.textContent = e.tag || TAG_LABEL[e.kind] || "Lịch";
+        c.appendChild(time); c.appendChild(title); c.appendChild(meta); c.appendChild(tag);
+        // Nhãn trạng thái từ cổng (Bổ sung / Hủy / Thay đổi địa điểm / HN trực
+        // tuyến) — hiện thành chip riêng ngay cạnh nhãn loại, "Hủy" tô đỏ.
+        (e.flag || "").split(";").map(s => s.trim()).filter(Boolean).forEach(f => {
+          const chip = document.createElement("span");
+          chip.className = "tag flag" + (/hủy/i.test(f) ? " cancel" : "");
+          chip.textContent = f;
+          c.appendChild(chip);
+        });
+        list.appendChild(c);
+      });
+    }
+
+    document.getElementById("prevBtn").onclick = () => { weekStart.setDate(weekStart.getDate() - 7); loadWeek(); };
+    document.getElementById("nextBtn").onclick = () => { weekStart.setDate(weekStart.getDate() + 7); loadWeek(); };
+
+    document.getElementById("loginForm").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const btn = document.getElementById("loginBtn");
+      const err = document.getElementById("loginErr");
+      err.textContent = "";
+      btn.disabled = true;
+      btn.textContent = "Đang kiểm tra…";
+      try {
+        const data = await apiPost({
+          action: "login",
+          user: document.getElementById("loginUser").value,
+          pass: document.getElementById("loginPass").value
+        });
+        if (!data.ok) throw new Error(data.error || "Đăng nhập thất bại.");
+        setSession({ sid: data.session, user: data.user });
+        document.getElementById("loginPass").value = "";
+        showApp(data.user);
+        loadWeek();
+      } catch (e) {
+        err.textContent = e.message || "Đăng nhập thất bại.";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Đăng nhập";
+      }
+    });
+
+    document.getElementById("logoutBtn").onclick = async () => {
+      const sess = getSession();
+      setSession(null);
+      if (sess) { try { await apiPost({ action: "logout", session: sess.sid }); } catch (e) { } }
+      events = [];
+      syncedAt = "";
+      showLogin();
+      render();
+    };
+
+    // Khởi động: có phiên sẵn thì vào thẳng (API vẫn kiểm tra lại phía server),
+    // chưa có thì hiện form đăng nhập.
+    if (configured) {
+      const sess0 = getSession();
+      if (sess0) showApp(sess0.user);
+      else showLogin();
+    }
+    loadWeek();
+  </script>
+</body>
+
+</html>

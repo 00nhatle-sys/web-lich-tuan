@@ -4,7 +4,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lịch Công Tác Tuần — Hệ thống Xem Lịch Trực Tuyến</title>
+  <title>Lịch ĐLTBI — Lịch công tác tuần</title>
+
+  <!-- PWA & Mobile Web App Meta Tags cho Màn hình chính Di động -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Lịch ĐLTBI">
+  <meta name="application-name" content="Lịch ĐLTBI">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Favicon & Icon khi Thêm vào màn hình chính (Add to Home screen) -->
+  <link rel="icon" type="image/png" sizes="128x128" href="icon.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="icon.png">
+  <link rel="apple-touch-icon-precomposed" sizes="128x128" href="icon.png">
+  <link rel="manifest" href="manifest.json">
 
   <!-- Google Fonts: Be Vietnam Pro (Chuẩn hiển thị tiếng Việt) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1131,13 +1145,8 @@
   <header class="app-header">
     <div class="header-container">
       <div class="brand-wrap">
-        <div class="brand-logo" title="Lịch tuần">
-          <svg class="icon icon-lg" viewBox="0 0 24 24">
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-            <line x1="16" x2="16" y1="2" y2="6" />
-            <line x1="8" x2="8" y1="2" y2="6" />
-            <line x1="3" x2="21" y1="10" y2="10" />
-          </svg>
+        <div class="brand-logo" title="Lịch ĐLTBI">
+          <img src="icon.png" alt="Lịch ĐLTBI" style="width: 26px; height: 26px; object-fit: contain;" onerror="this.src='https://cdn-icons-png.flaticon.com/128/1048/1048953.png'">
         </div>
         <div class="brand-text">
           <h1>ĐIỆN LỰC TRẤN BIÊN-Lịch công tác</h1>
