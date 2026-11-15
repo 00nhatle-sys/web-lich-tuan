@@ -276,30 +276,6 @@
       background: var(--color-accent-hover);
     }
 
-    /* Banner thông báo dữ liệu mẫu */
-    .sample-banner {
-      background-color: #fffbeb;
-      border-bottom: 1px solid #fde68a;
-      color: #92400e;
-      padding: 9px 16px;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-align: center;
-    }
-
-    .sample-banner button {
-      color: #b45309;
-      font-weight: 700;
-      text-decoration: underline;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
     /* ==========================================================================
        3. TOOLBAR TINH GỌN (CHỌN TUẦN & LÀM MỚI)
        ========================================================================== */
@@ -1144,27 +1120,6 @@
       display: none;
     }
 
-    .login-sample-link-wrap {
-      text-align: center;
-      margin-top: 14px;
-      border-top: 1px solid var(--color-border);
-      padding-top: 12px;
-    }
-
-    .login-sample-link {
-      background: none;
-      border: none;
-      color: var(--color-accent);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .login-sample-link:hover {
-      color: var(--color-accent-hover);
-    }
-
     /* ==========================================================================
        8. FOOTER
        ========================================================================== */
@@ -1251,17 +1206,6 @@
       </div>
     </div>
   </header>
-
-  <!-- Banner thông báo dữ liệu mẫu -->
-  <div class="sample-banner" id="sampleBanner" hidden>
-    <svg class="icon" viewBox="0 0 24 24">
-      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-      <line x1="12" x2="12" y1="9" y2="13" />
-      <line x1="12" x2="12.01" y1="17" y2="17" />
-    </svg>
-    <span><strong>DỮ LIỆU MẪU:</strong> Đang xem dữ liệu ví dụ minh họa giao diện. <button id="bannerLoginBtn">Đăng nhập
-        tài khoản</button> để xem lịch công tác chính thức.</span>
-  </div>
 
   <!-- TOOLBAR TINH GỌN (CHỌN TUẦN & LÀM MỚI) -->
   <nav class="app-toolbar">
@@ -1411,12 +1355,6 @@
         </button>
 
         <div class="login-error-box" id="loginErr"></div>
-
-        <div class="login-sample-link-wrap">
-          <button type="button" id="viewSampleBtn" class="login-sample-link">
-            Xem bản mẫu giao diện (Chế độ xem trước)
-          </button>
-        </div>
       </form>
     </div>
   </div>
@@ -1429,18 +1367,6 @@
     const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbzUFYbSjH8oORJVopAwLezsiQ5sWFtVVqRojKqL99rlRHkyPxcOyGilgbwlvHdISs8F/exec";
     const STALE_AFTER_HOURS = 12;
 
-    const SAMPLE = [
-      { d: 0, start: "07:30", end: "16:30", title: "Kết nối, cấu hình, kiểm tra ETE dữ liệu SCADA TBA 110kV Tam An (Công trình Đầu tư, cải tạo nâng cấp thiết bị TBA 110kV Tam An)", place: "Tại TBA 110kV Tam An, phòng Điều độ - TTĐK Đồng Nai", unit: "ĐĐ", kind: "hop", flag: "Bổ sung", prep: "ĐĐ", members: "ĐĐ, XNLĐCT, Công ty TNĐMN" },
-      { d: 0, start: "07:30", end: "16:30", title: "Kết nối, cấu hình, kiểm tra ETE dữ liệu SCADA TBA 110kV An Bình (Thi công công trình ĐTXD thay thiết bị trạm 110kV An Bình giai đoạn 4/4: Hạng mục Thử nghiệm liên động toàn trạm, mạch F87B)", place: "Tại TBA 110kV An Bình, phòng Điều độ - TTĐK Đồng Nai", unit: "ĐĐ", kind: "congtac", flag: "HN trực tuyến; Bổ sung", prep: "ĐĐ", members: "ĐĐ, XNLĐCT, Đơn vị thi công" },
-      { d: 0, start: "07:30", end: "16:30", title: "Cài đặt thay đổi khung giờ (theo quyết định 963/QĐ-BCT) tại các đo đếm ranh giới các trạm biến áp 220kV Định Quán, NMTĐ Phú Tân", place: "Trạm biến áp 220kV Định Quán, NMTĐ Phú Tân", unit: "Phòng Kinh Doanh", kind: "lamviec", flag: "", prep: "KD", members: "KD, Công ty Mua bán Điện, Công ty Thí nghiệm Điện miền Nam, Công ty Truyền tải điện 4" },
-      { d: 0, start: "07:30", end: "16:30", title: "Kết nối, cấu hình, kiểm tra ETE dữ liệu SCADA TBA 110kV Bắc Sơn (Công trình \"Trang bị hệ thống rơle tuân thủ quy định HTĐ phân phối tại các TBA 110kV đang vận hành\")", place: "Tại TBA 110kV Bắc Sơn, phòng Điều độ - TTĐK Đồng Nai", unit: "ĐĐ", kind: "congtac", flag: "Trực tiếp", prep: "ĐĐ", members: "ĐĐ, XNLĐCT, Công ty TNĐMN" },
-      { d: 0, start: "07:30", end: "16:30", title: "Nghiệm thu hoàn thành công trình đưa vào sử dụng công trình Xây dựng cơ bản lưới điện khu vực 2 huyện Bù Đăng", place: "hiện trường công trình", unit: "Ban Quản Lý Dự án", kind: "congtac", flag: "Trọng tâm; Bổ sung", prep: "QLDA", members: "AT, KHVT, KT, ĐT, QLDA, ĐLBĐA, XNDVĐN" },
-      { d: 1, start: "08:00", end: "11:00", title: "Họp rà soát tiến độ dự án lưới điện và công tác giải phóng mặt bằng các tuyến 110kV trọng điểm", place: "Phòng họp Ban Quản lý Dự án", unit: "Ban Quản lý Dự án", kind: "hop", flag: "", prep: "Báo cáo tiến độ quý IV", members: "Ban QLDA, Tư vấn giám sát, Nhà thầu chính" },
-      { d: 2, start: "08:30", end: "11:30", title: "Làm việc với các đơn vị đối tác về kế hoạch cung ứng vật tư thiết bị và phương án vận hành an toàn", place: "Trụ sở đối tác", unit: "Ban Giám đốc", kind: "lamviec", flag: "", prep: "Hồ sơ năng lực, hợp đồng cung ứng", members: "Ban Lãnh đạo, Phòng Kỹ thuật, Phòng Kế hoạch" },
-      { d: 3, start: "07:30", end: "17:00", title: "Khảo sát hiện trường và kiểm tra thực địa công tác an toàn lao động lưới điện cao thế", place: "Địa bàn huyện Tân Lạc", unit: "Phòng An toàn", kind: "congtac", flag: "Bổ sung", prep: "Phương tiện, dụng cụ đo kiểm tra an toàn", members: "Đội kiểm định kỹ thuật an toàn" },
-      { d: 4, start: "09:00", end: "11:30", title: "Họp tổng kết tuần và giao ban công tác trọng tâm tuần tiếp theo", place: "Phòng họp A, Tòa nhà Điều hành", unit: "Văn phòng", kind: "hop", flag: "HN trực tuyến", prep: "Báo cáo tuần tổng hợp", members: "Toàn thể lãnh đạo đơn vị, Trưởng phó các phòng ban" },
-    ];
-
     const TAG_LABEL = { hop: "Họp", congtac: "Công tác", lamviec: "Làm việc", khac: "Lịch" };
     const DAYS = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
     const DAYS_SHORT = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
@@ -1451,7 +1377,6 @@
     let selectedDayIndex = (new Date().getDay() + 6) % 7; // 0..6
     let events = [];
     let syncedAt = "";
-    let usingSample = !configured;
     let usingCache = false;
 
     // ==========================================================================
@@ -1685,30 +1610,12 @@
       const refreshBtn = document.getElementById("refreshBtn");
       if (forceRefresh) refreshBtn.classList.add("is-spinning");
 
-      if (usingSample) {
-        events = SAMPLE.map(e => ({
-          date: iso(addDays(weekStart, e.d)),
-          start: e.start,
-          end: e.end,
-          title: e.title,
-          place: e.place,
-          unit: e.unit,
-          kind: e.kind || "hop",
-          flag: e.flag || "",
-          prep: e.prep || "",
-          members: e.members || ""
-        }));
-        syncedAt = "";
-        renderAll();
-        if (forceRefresh) setTimeout(() => refreshBtn.classList.remove("is-spinning"), 300);
-        return;
-      }
-
       const sess = getSession();
       if (!sess) {
-        usingSample = true;
+        events = [];
+        syncedAt = "";
         showLogin();
-        loadWeek();
+        renderAll();
         if (forceRefresh) refreshBtn.classList.remove("is-spinning");
         return;
       }
@@ -1731,7 +1638,6 @@
         events = (data.events || []).map(normEvent);
         syncedAt = data.synced_at || "";
         usingCache = false;
-        usingSample = false;
         localStorage.setItem(cacheKey(weekStart), JSON.stringify({ events, synced_at: syncedAt }));
       } catch (err) {
         const cached = localStorage.getItem(cacheKey(weekStart));
@@ -2043,11 +1949,10 @@
     function renderFreshness() {
       const text = document.getElementById("freshnessText");
       const dot = document.getElementById("freshnessDot");
-      const sampleBanner = document.getElementById("sampleBanner");
 
-      sampleBanner.hidden = !usingSample;
-      if (usingSample) {
-        text.textContent = "Dữ liệu mẫu (Demo)";
+      const sess = getSession();
+      if (!sess) {
+        text.textContent = "Chưa đăng nhập";
         dot.className = "status-dot stale";
         return;
       }
@@ -2100,14 +2005,7 @@
     };
 
     document.getElementById("openLoginBtn").onclick = () => showLogin();
-    document.getElementById("bannerLoginBtn").onclick = () => showLogin();
     document.getElementById("closeLoginModalBtn").onclick = () => hideLogin();
-
-    document.getElementById("viewSampleBtn").onclick = () => {
-      usingSample = true;
-      hideLogin();
-      loadWeek();
-    };
 
     // Toggle hiện/ẩn mật khẩu
     document.getElementById("togglePassBtn").onclick = () => {
@@ -2155,7 +2053,6 @@
         setSession({ sid: data.session, user: data.user });
         document.getElementById("loginPass").value = "";
         showApp(data.user);
-        usingSample = false;
         loadWeek();
       } catch (e) {
         err.textContent = e.message || "Đăng nhập thất bại. Vui lòng thử lại.";
@@ -2190,7 +2087,6 @@
       const sess0 = getSession();
       if (sess0) {
         showApp(sess0.user);
-        usingSample = false;
       } else {
         document.getElementById("openLoginBtn").hidden = false;
         showLogin();
