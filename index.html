@@ -2047,7 +2047,8 @@
         const data = await apiPost({
           action: "login",
           user: document.getElementById("loginUser").value,
-          pass: document.getElementById("loginPass").value
+          pass: document.getElementById("loginPass").value,
+          device: navigator.userAgent || ""
         });
         if (!data.ok) throw new Error(data.error || "Tên đăng nhập hoặc mật khẩu không đúng.");
         setSession({ sid: data.session, user: data.user });
